@@ -64,6 +64,10 @@ type Specification struct {
 		Property            string `envconfig:"inner"`
 		PropertyWithDefault string `default:"fuzzybydefault"`
 	} `envconfig:"outer"`
+	NestedSpecificationWithNoTag struct {
+		Property            string `envconfig:"inner"`
+		PropertyWithDefault string `default:"fuzzybydefault"`
+	}
 	AfterNested  string
 	DecodeStruct HonorDecodeInStruct `envconfig:"honor"`
 	Datetime     time.Time
@@ -700,6 +704,19 @@ func TestNestedStructVarName(t *testing.T) {
 	}
 	if s.NestedSpecification.Property != val {
 		t.Errorf("expected %s, got %s", val, s.NestedSpecification.Property)
+	}
+}
+
+func TestNestedStructWithNoTag(t *testing.T) {
+	var s Specification
+	os.Clearenv()
+	os.Setenv("ENV_CONFIG_REQUIREDVAR", "required")
+	os.Setenv("ENV_CONFIG_INNER", "value of inner")
+	if err := Process("env_config", &s); err != nil {
+		t.Error(err.Error())
+	}
+	if s.NestedSpecificationWithNoTag.Property != "value of inner" {
+		t.Errorf("expected %s, got %s", "value of inner", s.NestedSpecificationWithNoTag.Property)
 	}
 }
 
