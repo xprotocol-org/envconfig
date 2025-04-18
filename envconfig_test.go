@@ -115,8 +115,8 @@ func TestProcess(t *testing.T) {
 	if err != nil {
 		t.Error(err.Error())
 	}
-	if s.NoPrefixWithAlt != "127.0.0.1" {
-		t.Errorf("expected %v, got %v", "127.0.0.1", s.NoPrefixWithAlt)
+	if s.NoPrefixWithAlt != "" {
+		t.Errorf("expected empty string, got %v", s.NoPrefixWithAlt)
 	}
 	if !s.Debug {
 		t.Errorf("expected %v, got %v", true, s.Debug)
@@ -432,14 +432,15 @@ func TestExplicitBlankDefaultVar(t *testing.T) {
 func TestAlternateNameDefaultVar(t *testing.T) {
 	var s Specification
 	os.Clearenv()
+	os.Setenv("ENV_CONFIG_BROKER", "prefixed_betterbroker")
 	os.Setenv("BROKER", "betterbroker")
 	os.Setenv("ENV_CONFIG_REQUIREDVAR", "foo")
 	if err := Process("env_config", &s); err != nil {
 		t.Error(err.Error())
 	}
 
-	if s.NoPrefixDefault != "betterbroker" {
-		t.Errorf("expected %q, got %q", "betterbroker", s.NoPrefixDefault)
+	if s.NoPrefixDefault != "prefixed_betterbroker" {
+		t.Errorf("expected %q, got %q", "prefixed_betterbroker", s.NoPrefixDefault)
 	}
 
 	os.Clearenv()
@@ -693,7 +694,7 @@ func TestNestedStructVarName(t *testing.T) {
 	os.Clearenv()
 	os.Setenv("ENV_CONFIG_REQUIREDVAR", "required")
 	val := "found with only short name"
-	os.Setenv("INNER", val)
+	os.Setenv("ENV_CONFIG_OUTER_INNER", val)
 	if err := Process("env_config", &s); err != nil {
 		t.Error(err.Error())
 	}
@@ -798,14 +799,14 @@ func TestErrorMessageForRequiredAltVar(t *testing.T) {
 	}
 
 	os.Clearenv()
-	err := Process("env_config", &s)
+	err := Process("ENV_PREFIX", &s)
 
 	if err == nil {
 		t.Error("no failure when missing required variable")
 	}
 
-	if !strings.Contains(err.Error(), " BAR ") {
-		t.Errorf("expected error message to contain BAR, got \"%v\"", err)
+	if !strings.Contains(err.Error(), " ENV_PREFIX_BAR ") {
+		t.Errorf("expected error message to contain ENV_PREFIX_BAR, got \"%v\"", err)
 	}
 }
 
