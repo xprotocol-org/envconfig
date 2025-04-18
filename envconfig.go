@@ -130,9 +130,10 @@ func gatherInfo(prefix string, spec interface{}) ([]varInfo, error) {
 
 		if f.Kind() == reflect.Struct {
 			// honor Decode if present
+			envTag := ftype.Tag.Get("envconfig")
 			if decoderFrom(f) == nil && setterFrom(f) == nil && textUnmarshaler(f) == nil && binaryUnmarshaler(f) == nil {
 				innerPrefix := prefix
-				if !ftype.Anonymous {
+				if !ftype.Anonymous && envTag != "" {
 					innerPrefix = info.Key
 				}
 
