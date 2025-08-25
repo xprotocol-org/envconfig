@@ -202,6 +202,17 @@ func Process(prefix string, spec interface{}) error {
 			value = def
 		}
 
+		strip := info.Tags.Get("strip")
+		if strip != "" && isTrue(strip) && ok {
+			var newValue string
+			newValue, err = strconv.Unquote(value)
+			if err == nil {
+				value = newValue
+			} else if err != nil && !errors.Is(err, strconv.ErrSyntax) {
+				return fmt.Errorf("failed to unquote with error: %w", err)
+			}
+		}
+
 		req := info.Tags.Get("required")
 		if !ok && def == "" {
 			if isTrue(req) {
