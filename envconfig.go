@@ -213,6 +213,11 @@ func Process(prefix string, spec interface{}) error {
 			}
 		}
 
+		expand := info.Tags.Get("expand")
+		if expand != "" && isTrue(expand) && ok {
+			value = os.ExpandEnv(value)
+		}
+
 		req := info.Tags.Get("required")
 		if !ok && def == "" {
 			if isTrue(req) {

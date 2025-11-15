@@ -151,6 +151,16 @@ ENV_CONFIG_OUTER_PROPERTYWITHDEFAULT
 ..[type]........String
 ..[default].....fuzzybydefault
 ..[required]....
+ENV_CONFIG_INNER
+..[description].
+..[type]........String
+..[default].....
+..[required]....
+ENV_CONFIG_PROPERTYWITHDEFAULT
+..[description].
+..[type]........String
+..[default].....fuzzybydefault
+..[required]....
 ENV_CONFIG_AFTERNESTED
 ..[description].
 ..[type]........String
@@ -179,5 +189,10 @@ ENV_CONFIG_URLVALUE
 ENV_CONFIG_URLPOINTER
 ..[description].
 ..[type]........CustomURL
+..[default].....
+..[required]....
+ENV_CONFIG_EXPANDVAR
+..[description].
+..[type]........String
 ..[default].....
 ..[required]....

@@ -6,6 +6,7 @@ package envconfig
 
 import (
 	"bytes"
+	"github.com/google/go-cmp/cmp"
 	"io"
 	"io/ioutil"
 	"log"
@@ -50,22 +51,9 @@ func TestMain(m *testing.M) {
 
 func compareUsage(want, got string, t *testing.T) {
 	got = strings.ReplaceAll(got, " ", ".")
-	if want != got {
-		shortest := len(want)
-		if len(got) < shortest {
-			shortest = len(got)
-		}
-		if len(want) != len(got) {
-			t.Errorf("expected result length of %d, found %d", len(want), len(got))
-		}
-		for i := 0; i < shortest; i++ {
-			if want[i] != got[i] {
-				t.Errorf("difference at index %d, expected '%c' (%v), found '%c' (%v)\n",
-					i, want[i], want[i], got[i], got[i])
-				break
-			}
-		}
+	if diff := cmp.Diff(want, got); diff != "" {
 		t.Errorf("Complete Expected:\n'%s'\nComplete Found:\n'%s'\n", want, got)
+		t.Errorf("Diff: %s", diff)
 	}
 }
 
